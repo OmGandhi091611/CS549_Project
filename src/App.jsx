@@ -39,7 +39,7 @@ const App = () => {
   const [tag, setTag] = useState('');
   const [verificationResult, setVerificationResult] = useState('');
   const [attackResult, setAttackResult] = useState(null);
-  const [testResults, setTestResults] = useState([]); // New state for tests
+  const [testResults, setTestResults] = useState([]);
 
   const handleGenerateMac = () => {
     const result = macWithSteps(key, message);
@@ -54,7 +54,7 @@ const App = () => {
 
   const handleVerifyMac = () => {
     const valid = vrfy(key, message, tag);
-    setVerificationResult(valid ? '✅ MAC Verification SUCCESS' : '❌ MAC Verification FAILURE');
+    setVerificationResult(valid ? 'MAC Verification SUCCESS' : 'MAC Verification FAILURE');
   };
 
   const demonstrateAttack = () => {
