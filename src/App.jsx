@@ -40,15 +40,25 @@ const App = () => {
   const [verificationResult, setVerificationResult] = useState('');
   const [attackResult, setAttackResult] = useState(null);
   const [testResults, setTestResults] = useState([]);
+  const [macSteps, setMacSteps] = useState(null); // New state for MAC steps
 
   const handleGenerateMac = () => {
     const result = macWithSteps(key, message);
     if (result.error) {
       setTag('');
       setVerificationResult(result.error);
+      setMacSteps(null);
     } else {
       setTag(result.tag);
       setVerificationResult('');
+      setMacSteps({
+        m0: result.steps.m0,
+        m1: result.steps.m1,
+        input0: result.steps.input0,
+        input1: result.steps.input1,
+        t0: result.steps.t0,
+        t1: result.steps.t1
+      });
     }
   };
 
@@ -170,6 +180,22 @@ const App = () => {
             </Alert>
           )}
 
+          {macSteps && (
+            <Alert severity="info" sx={{ mt: 3 }}>
+              <Typography variant="subtitle2">MAC Generation Process:</Typography>
+              <Typography variant="body2">Split Message into:</Typography>
+              <Typography variant="body2">- m0: {macSteps.m0}</Typography>
+              <Typography variant="body2">- m1: {macSteps.m1}</Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>Prefix Bits:</Typography>
+              <Typography variant="body2">- 0 || m0 = {macSteps.input0}</Typography>
+              <Typography variant="body2">- 1 || m1 = {macSteps.input1}</Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>Apply PRF (Fk):</Typography>
+              <Typography variant="body2">- Fk(0||m0) = {macSteps.t0}</Typography>
+              <Typography variant="body2">- Fk(1||m1) = {macSteps.t1}</Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}><strong>Final Tag:</strong> {macSteps.t0 + macSteps.t1}</Typography>
+            </Alert>
+          )}
+
           {verificationResult && (
             <Alert severity={verificationResult.includes('SUCCESS') ? 'success' : 'error'} sx={{ mt: 2 }}>
               {verificationResult}
@@ -211,9 +237,7 @@ const App = () => {
 
               <Alert severity="warning" sx={{ mb: 2 }}>
                 <strong>Forged Message:</strong> {attackResult.forgedMsg}<br/>
-                Formed by combining first half of msg1 and second half of msg2.<br/>
-                <strong>Forged Tag:</strong> {attackResult.forgedTag}<br/>
-                Formed by combining first half of tag1 and second half of tag2.
+                <strong>Forged Tag:</strong> {attackResult.forgedTag}
               </Alert>
 
               <Alert severity={attackResult.success ? 'success' : 'error'}>
