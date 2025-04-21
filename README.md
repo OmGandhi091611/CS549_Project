@@ -1,4 +1,4 @@
-# Demonstration and Analysis of an Insecure MAC Construction
+# Functional Correctness vs Security: Case Study of an Insecure MAC Scheme
 
 ## Project Overview
 
@@ -41,7 +41,9 @@ Follow these steps to run the project locally:
    Open a terminal inside the project folder and run:
    ```bash
    npm install
+   ```
 4. **Start the development Server**
     Run:
     ```bash
    npm run dev
+   ```
