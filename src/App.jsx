@@ -177,9 +177,35 @@ const App = () => {
   return (
     <Container maxWidth="md" sx={{ mt: 5 }}>
       <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }} style={{ backgroundColor: '#e3e3e3' }}>
-        <Typography variant="h4" gutterBottom align="center">
-          MAC Scheme Demo
-        </Typography>
+      <Box
+    component="header"
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      mb: 4,
+    }}
+  >
+    <Box
+      component="img"
+      src="/image2.png"          // put favicon.png in your public/ folder
+      alt="MAC Scheme Logo"
+      sx={{
+        width: 24,                // make it a bit bigger than 20px for clarity
+        height: 24,
+        mr: 1.5                   // space between icon and text
+      }}
+    />
+    <Typography
+      component="h1"
+      variant="h4"
+      sx={{
+        fontWeight: 700,
+        letterSpacing: '0.03em',
+      }}
+    >
+      MAC Scheme Demo
+    </Typography>
+  </Box>
 
         <Box sx={{ my: 3 }} >
           <Typography variant="h6" gutterBottom>
