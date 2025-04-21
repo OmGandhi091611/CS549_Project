@@ -31,8 +31,15 @@ const Fk = (key, inputBits) => {
 
 const macWithSteps = (key, message) => {
   const n = key.length;
+  
   if (!/^[01]+$/.test(message)) {
-    return { error: 'Message must be only 0s and 1s.' };
+    return { error: "Message must consist of 0s and 1s only." };
+  }
+  if (message.length < 2) {
+    return { error: "Message length must be at least 2 bits." };
+  }
+  if (key.length < 2) {
+    return { error: "Key length must be at least 2 bits." };
   }
   if (message.length !== 2 * (n - 1)) {
     return { error: `Message length must be exactly ${2 * (n - 1)} bits.` };
