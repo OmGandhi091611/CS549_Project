@@ -19,9 +19,9 @@ The application also includes:
 - **Frontend Framework:** React (with Vite Build Tool)
 - **UI Library:** Material-UI (MUI v5)
 - **Package Manager:** npm (Node Package Manager)
-- **Node.js Version:** 18.16.0
+- **Node.js Version:** 20.15.1
 - **Vite Version:** 4.3.0
-- **Operating System:** macOS Sonoma 14.4
+- **Operating System:** macOS Sonoma 15.4.1
 - **Browser Tested:** Google Chrome Version 124.0
 - **Local Server:** Vite Development Server (`npm run dev`)
 
