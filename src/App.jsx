@@ -11,9 +11,30 @@ const Fk = (key, inputBits) => {
 
 const macWithSteps = (key, message) => {
   const n = key.length;
-  if (message.length !== 2 * (n - 1)) {
-    return { error: `Message length must be exactly ${2 * (n - 1)} bits.` };
+
+  // 1) Key must be binary and at least 2 bits long
+  if (!/^[01]+$/.test(key)) {
+    return { error: "Key must consist of 0s and 1s only." };
   }
+  if (n < 2) {
+    return { error: "Key must be at least 2 bits long." };
+  }
+
+  // 2) Message must be binary and at least 2 bits long
+  if (!/^[01]+$/.test(message)) {
+    return { error: "Message must consist of 0s and 1s only." };
+  }
+  const L = message.length;
+  if (L < 2) {
+    return { error: "Message must be at least 2 bits long." };
+  }
+
+  // (Optional) enforce even-length for perfectly equal halves
+  // if (L % 2 !== 0) {
+  //   return { error: "Message length must be even for equal splitting." };
+  // }
+
+  // now do the usual split and PRF steps…
   const m0 = message.slice(0, n - 1);
   const m1 = message.slice(n - 1);
   const input0 = '0' + m0;
@@ -21,6 +42,7 @@ const macWithSteps = (key, message) => {
   const t0 = Fk(key, input0);
   const t1 = Fk(key, input1);
   const tag = t0 + t1;
+
   return {
     tag,
     steps: { m0, m1, input0, input1, t0, t1 }
