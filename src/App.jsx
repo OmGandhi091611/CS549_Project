@@ -1,5 +1,25 @@
 import { Alert, Box, Button, Container, Paper, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { Collapse, IconButton} from '@mui/material';
+
+import confetti from 'canvas-confetti';
+
+// fire a quick burst of confetti
+const confettiInstance = confetti.create(null, {
+  resize: true,     // will fill the entire window
+  useWorker: true   // offload animation to a web worker
+});
+
+const fireConfetti = () => {
+  confettiInstance({
+    particleCount: 200,
+    spread: 120,
+    startVelocity: 30,
+    gravity: 1.2,
+    ticks: 200,
+    origin: { x: 0.5, y: 0.4 }
+  });
+};
 
 const xorBits = (a, b) => {
   return a.split('').map((bit, i) => (bit === b[i] ? '0' : '1')).join('');
@@ -11,30 +31,13 @@ const Fk = (key, inputBits) => {
 
 const macWithSteps = (key, message) => {
   const n = key.length;
-
-  // 1) Key must be binary and at least 2 bits long
-  if (!/^[01]+$/.test(key)) {
-    return { error: "Key must consist of 0s and 1s only." };
-  }
-  if (n < 2) {
-    return { error: "Key must be at least 2 bits long." };
-  }
-
-  // 2) Message must be binary and at least 2 bits long
   if (!/^[01]+$/.test(message)) {
-    return { error: "Message must consist of 0s and 1s only." };
+    return { error: 'Message must be only 0s and 1s.' };
   }
-  const L = message.length;
-  if (L < 2) {
-    return { error: "Message must be at least 2 bits long." };
+  if (message.length !== 2 * (n - 1)) {
+    return { error: `Message length must be exactly ${2 * (n - 1)} bits.` };
   }
-
-  // (Optional) enforce even-length for perfectly equal halves
-  // if (L % 2 !== 0) {
-  //   return { error: "Message length must be even for equal splitting." };
-  // }
-
-  // now do the usual split and PRF steps…
+  
   const m0 = message.slice(0, n - 1);
   const m1 = message.slice(n - 1);
   const input0 = '0' + m0;
@@ -42,7 +45,6 @@ const macWithSteps = (key, message) => {
   const t0 = Fk(key, input0);
   const t1 = Fk(key, input1);
   const tag = t0 + t1;
-
   return {
     tag,
     steps: { m0, m1, input0, input1, t0, t1 }
@@ -87,6 +89,9 @@ const App = () => {
   const handleVerifyMac = () => {
     const valid = vrfy(key, message, tag);
     setVerificationResult(valid ? 'MAC Verification SUCCESS' : 'MAC Verification FAILURE');
+    if (valid) {
+           fireConfetti();
+         }
   };
 
   const demonstrateAttack = () => {
@@ -164,12 +169,12 @@ const App = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 5 }}>
-      <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }}>
+      <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }} style={{ backgroundColor: '#e3e3e3' }}>
         <Typography variant="h4" gutterBottom align="center">
           MAC Scheme Demo
         </Typography>
 
-        <Box sx={{ my: 3 }}>
+        <Box sx={{ my: 3 }} >
           <Typography variant="h6" gutterBottom>
             Generate / Verify MAC
           </Typography>
